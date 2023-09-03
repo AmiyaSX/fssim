@@ -12,6 +12,9 @@ The more extensive tutorial can be found under [Wiki](fssim_doc/index.md)
 FSSIM is developed by [Juraj Kabzan](https://www.linkedin.com/in/juraj-kabzan-143698a1/) as part of our work at [AMZ-Driverless](http://driverless.amzracing.ch/).
 
 # How to Run It in your Workspace
+
+**Consider reading [Docker Instructions](#docker-instructions) for easier setup**
+
 0. Install `sudo apt install ros-kinetic-desktop-full` and `sudo apt install python-catkin-tools`
 1. Clone this repository to an existing **ROS Workspace** initialized with `catkin init`
 2. Run `cd src/fssim` from the workspace.
@@ -33,6 +36,10 @@ FSSIM is developed by [Juraj Kabzan](https://www.linkedin.com/in/juraj-kabzan-14
 or
 
 5. Run automated test. Execute `FSD_ATS` (this command is loaded when sourcing `fsd_environment.sh`). If you will want to see the visualization, run RViZ: `roslaunch fssim_interface rviz.launch`. NOTE: The car will keep driving until the simulation will time-out since no lap counter is implemented.
+
+# Docker Instructions
+
+See [tutorial.md](fssim_docker/tutorial.md) for a more detailed tutorial on how to setup the simulation using Docker!
 
 # Features
 * This simulator is targeted for FSD competition, thus it contains some of the real-car safety features

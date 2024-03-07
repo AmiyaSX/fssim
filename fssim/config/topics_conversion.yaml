@@ -1,0 +1,4 @@
+origin_cmd_topic: /ros2can/send/dv_control_target
+target_cmd_topic: /fssim/cmd
+origin_odom_topic: /fssim/base_pose_ground_truth
+target_odom_topic: /dlio/odom_node/odom

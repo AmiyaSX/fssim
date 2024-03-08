@@ -7,8 +7,8 @@ from fssim_common.msg import State
 
 
 # Use the config variables
-INPUT_ODOM_TOPIC = "/fssim/base_pose_ground_truth" # /fssim/base_pose_ground_truth (fssim)
-OUTPUT_ODOM_TOPIC = "/dlio/odom_node/odom" # /dlio/odom_node/odom (MARS)
+INPUT_ODOM_TOPIC = rospy.get_param('conversion/topics/origin_odom_topic') # /fssim/base_pose_ground_truth (fssim)
+OUTPUT_ODOM_TOPIC = rospy.get_param('conversion/topics/target_odom_topic') # /dlio/odom_node/odom (MARS)
 
 def cb_odometry_conversion(state):
     msg = Odometry()
@@ -22,7 +22,7 @@ def cb_odometry_conversion(state):
     msg.pose.pose.orientation.x = 0
     msg.pose.pose.orientation.y = 0
     msg.pose.pose.orientation.z = state.yaw 
-    msg.pose.pose.orientation.w = 0
+    msg.pose.pose.orientation.w = 1
     # Odometry.twist.twist.linear
     msg.twist.twist.linear.x = state.vx
     msg.twist.twist.linear.y = state.vy

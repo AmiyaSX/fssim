@@ -6,8 +6,8 @@ from fssim_common.msg import dv_control_target
 from fssim_common.msg import Cmd
 
 # Use the config variables
-INPUT_CMD_TOPIC = "/ros2can/send/dv_control_target" # /ros2can/send/dv_control_target (MARS)
-OUTPUT_CMD_TOPIC = "/fssim/cmd" # /fssim/cmd (fssim)
+INPUT_CMD_TOPIC = rospy.get_param('conversion/topics/origin_cmd_topic') # /ros2can/send/dv_control_target (MARS)
+OUTPUT_CMD_TOPIC = rospy.get_param('conversion/topics/target_cmd_topic') # /fssim/cmd (fssim)
 
 def cb_dv_control_target_conversion(dv_control_target):
     msg = dv_control_target()

@@ -7,4 +7,5 @@ conversion:
     target_odom_topic: /dlio/odom_node/odom
     
   limits:
-    max_target_speed: 90
+    max_target_speed: 100
+    max_steering_angle: 90

@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 <launch>
     <rosparam file="$(find fssim)/config/topics_conversion.yaml" command="load"/>
-    
+
     <node pkg="fssim" name="fssim_cmd_conversion_node" type="cmd_convert.py" output="screen"/>
 
     <node pkg="fssim" name="fssim_odometry_conversion_node" type="odometry_convert.py" output="screen"/>
+
+    <node pkg="fssim" name="fssim_cones_conversion_node" type="cones_convert.py" output="screen"/>
 </launch>

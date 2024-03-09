@@ -24,7 +24,7 @@ class ConvertCommands:
 
     # get current vehicle speed using velocity in x and y direction
     def cb_get_vehicle_speed(self, car_state):
-        vehicle_speed = math.sqrt(car_state.vx^2 + car_state.vy^2)
+        vehicle_speed = math.sqrt(car_state.vx**2 + car_state.vy**2)
         if(vehicle_speed > MAX_TARGET_SPEED):
             vehicle_speed = MAX_TARGET_SPEED
         self.vehicle_speed = vehicle_speed

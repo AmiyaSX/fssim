@@ -14,11 +14,11 @@ def cb_odometry_conversion(state):
     msg = Odometry()
     # Odometry.header (stamp, frame_id)
     msg.header.frame_id ="fssim_map"
-    # Odometry.pose.pose.positionpoint
+    # Odometry.pose.pose.position
     msg.pose.pose.position.x = state.x
     msg.pose.pose.position.y = state.y
     msg.pose.pose.position.z = 0
-    # TODO Odometry.pose.pose.orientation (confirm the mapping to quanternion here)
+    # Odometry.pose.pose.orientation
     msg.pose.pose.orientation.x = 0
     msg.pose.pose.orientation.y = 0
     msg.pose.pose.orientation.z = state.yaw 

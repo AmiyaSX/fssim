@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  fssim:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    # restart: unless-stopped
+    volumes:
+      - ./:/ws/src/fssim/
+    network_mode: "host"
+    environment:
+      - PACKAGE_NAME=fssim
+    entrypoint: /ws/src/fssim/docker-entrypoint.sh
+    command: bash -c "source /ws/devel/setup.bash && sleep infinity"

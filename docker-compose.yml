@@ -1,15 +1,97 @@
 version: '3.8'
 
 services:
+
+  master:
+    container_name: 
+      master-container
+    image: ros:noetic-ros-core-focal
+    environment:
+      - ROS_DISTRO=noetic
+      - DISPLAY=novnc:0.0
+    restart: unless-stopped
+    networks:
+      - ros_network
+    command: bash -c "source /opt/ros/noetic/setup.bash && roscore"
+
+### -----------NOVNC----------------- ###
+  novnc:  
+    image: theasp/novnc:latest
+    environment:
+      - DISPLAY_WIDTH=1920
+      - DISPLAY_HEIGHT=1080
+    ports:
+      - "8080:8080"
+    networks:
+      - x11
+
   fssim:
+    depends_on:
+      - master
+      - novnc
     build:
       context: ./
       dockerfile: Dockerfile
-    # restart: unless-stopped
+    restart: unless-stopped
     volumes:
       - ./:/ws/src/fssim/
-    network_mode: "host"
+    networks:
+      - ros_network
+      - x11
     environment:
       - PACKAGE_NAME=fssim
+      - ROS_MASTER_URI=http://master:11311 
+      - DISPLAY=novnc:0.0
     entrypoint: /ws/src/fssim/docker-entrypoint.sh
-    command: bash -c "source /ws/devel/setup.bash && sleep infinity"
+    command: bash -c "source /ws/devel/setup.bash && roslaunch fssim auto_fssim.launch"
+  
+  path_planner_pkg:
+    depends_on:
+      - novnc
+      - fssim
+    build:
+      context: ../path_planner_pkg/
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    #runtime: nvidia 
+    environment:
+      - PACKAGE_NAME=path_planner_pkg
+      - ROS_MASTER_URI=http://master:11311
+    volumes:
+      - ../path_planner_pkg:/ws/src/path_planner_pkg
+      - ../path_planner_pkg/fs_msgs:/ws/src/fs_msgs
+      - ../fssim/fssim_common:/ws/src/fssim_common
+    networks:
+      - ros_network
+      - x11
+    entrypoint: /ws/src/path_planner_pkg/docker-entrypoint.sh  # <-- YOUR TODO: change to name of your repository
+    command: bash -c "source  /ws/devel/setup.bash && roslaunch path_planner run_planner.launch"
+  
+  controller_pkg:           # <-- YOUR TODO: change to name of your repository
+    depends_on: 
+      - path_planner_pkg          # <-- YOUR TODO: change dependencies to other packages
+    build:
+      context: ../controller_pkg/  
+      dockerfile: Dockerfile
+    image: controller_package:latest        # <-- YOUR TODO: change to name of your repository
+    restart: unless-stopped
+    environment:
+      - PACKAGE_NAME=controller_pkg     # <-- YOUR TODO: change to name of your repository
+      - ROS_MASTER_URI=http://master:11311
+    volumes:
+      - ../controller_pkg:/ws/src/controller_pkg       # <-- YOUR TODO: change to name of your repository
+      - ../controller_pkg/fs_msgs:/ws/src/fs_msgs
+      - ../controller_pkg/vehicle:/ws/src/vehicle
+      - ../controller_pkg/ros2can_msgs:/ws/src/ros2can_msgs
+      - ../fssim/fssim_common:/ws/src/fssim_common
+    networks:
+      - ros_network
+      - x11
+
+    entrypoint: /ws/src/controller_pkg/docker-entrypoint.sh  # <-- YOUR TODO: change to name of your repository
+    command: bash -c "while true; do sleep 1; done"
+
+networks:
+  ros_network:
+    driver: bridge
+  x11:

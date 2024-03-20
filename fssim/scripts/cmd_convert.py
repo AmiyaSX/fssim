@@ -7,7 +7,7 @@ from fssim_common.msg import Cmd
 from fssim_common.msg import State
 
 # Use the config variables
-INPUT_CMD_TOPIC = rospy.get_param('conversion/topics/origin_cmd_topic') # /ros2can/send/dv_control_target (MARS)
+INPUT_CMD_TOPIC = rospy.get_param('conversion/topics/origin_cmd_topic') # /navigation/dv_control_target (MARS)
 OUTPUT_CMD_TOPIC = rospy.get_param('conversion/topics/target_cmd_topic') # /fssim/cmd (fssim)
 INPUT_STATE_TOPIC = rospy.get_param('conversion/topics/origin_odom_topic') # /fssim/base_pose_ground_truth (fssim)
 
@@ -17,7 +17,7 @@ MAX_STEERING_ANGLE = rospy.get_param('conversion/limits/max_steering_angle') # m
 class ConvertCommands:
 
     def __init__(self):
-        self.kp = 0.01
+        self.kp = 0.5
         self.vehicle_speed = 0
         self.pub_convert_commands = rospy.Publisher(OUTPUT_CMD_TOPIC,
                           Cmd, queue_size=1)
@@ -31,7 +31,7 @@ class ConvertCommands:
 
     # map the speed state and steering angle range in -1 ~ 1
     def cb_dv_control_target_conversion(self, dv_control_target):
-        msg = dv_control_target()
+        msg = Cmd()
         target_speed = dv_control_target.dv_speed_target
         if(dv_control_target.dv_speed_target > MAX_TARGET_SPEED):
             target_speed = MAX_TARGET_SPEED
@@ -44,7 +44,7 @@ class ConvertCommands:
         if delta > 1: delta = 1
         elif delta < -1: delta = -1
         
-        msg.dv = dv
+        msg.dc = dv
         msg.delta = delta
         self.pub_convert_commands.publish(msg)
 

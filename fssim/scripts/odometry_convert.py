@@ -4,11 +4,11 @@ import rospy
 # ROS Msgs
 from nav_msgs.msg import Odometry 
 from fssim_common.msg import State
-
+from tf.transformations import quaternion_from_euler
 
 # Use the config variables
 INPUT_ODOM_TOPIC = rospy.get_param('conversion/topics/origin_odom_topic') # /fssim/base_pose_ground_truth (fssim)
-OUTPUT_ODOM_TOPIC = rospy.get_param('conversion/topics/target_odom_topic') # /dlio/odom_node/odom (MARS)
+OUTPUT_ODOM_TOPIC = rospy.get_param('conversion/topics/target_odom_topic') # /slam/output/odom (MARS)
 
 def cb_odometry_conversion(state):
     msg = Odometry()
@@ -19,10 +19,11 @@ def cb_odometry_conversion(state):
     msg.pose.pose.position.y = state.y
     msg.pose.pose.position.z = 0
     # Odometry.pose.pose.orientation
-    msg.pose.pose.orientation.x = 0
-    msg.pose.pose.orientation.y = 0
-    msg.pose.pose.orientation.z = state.yaw 
-    msg.pose.pose.orientation.w = 1
+    [x, y, z, w] = quaternion_from_euler(0, 0, state.yaw)
+    msg.pose.pose.orientation.x = x
+    msg.pose.pose.orientation.y = y
+    msg.pose.pose.orientation.z = z
+    msg.pose.pose.orientation.w = w
     # Odometry.twist.twist.linear
     msg.twist.twist.linear.x = state.vx
     msg.twist.twist.linear.y = state.vy

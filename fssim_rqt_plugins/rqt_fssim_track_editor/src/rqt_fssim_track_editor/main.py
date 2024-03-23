@@ -36,7 +36,7 @@ from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtWebKit import *
 
-from cone_editor import *
+from .cone_editor import *
 
 class TrackEditorPlugin(Plugin):
 
@@ -119,17 +119,17 @@ class TrackEditorPlugin(Plugin):
         self._cones_view.model_path = path_fssim_gazebo + "/models"
         self._cones_view.tracks_path = rospack.get_path('rqt_fssim_track_editor') + "/tracks"
 
-        # Variabples for snapshots importer
+        # Variables for snapshots importer
         self._topics_for_snpshot_found = False
 
     def pushButton_skidpad(self):
         id =  self._widget.toolBoxDiscipline.currentIndex()
-        if id is 0:
-            print "Generating SKIDPAD"
+        if id == 0:
+            print("Generating SKIDPAD")
             self._cones_view.generate_skipdpad(self._widget)
             self._widget.line_edit_track_name.setText("skidpad")
-        elif id is 1:
-            print "Generating Acceleration"
+        elif id == 1:
+            print("Generating Acceleration")
             self._cones_view.generate_acceleration(self._widget)
             self._widget.line_edit_track_name.setText("acceleration")
 
@@ -141,7 +141,7 @@ class TrackEditorPlugin(Plugin):
             self._cones_view.snapshots.import_snapshots(event)
             self._cones_view.change_view(2)
             self._widget.horSlid_snap.setMaximum(self._cones_view.snapshots.max)
-            print "INFO: Snapshot imported"
+            print("INFO: Snapshot imported")
 
     def handle_input_snap(self):
         if not self._topics_for_snpshot_found:
@@ -153,9 +153,9 @@ class TrackEditorPlugin(Plugin):
             self._topics_for_snpshot_found = True
 
     def handle_btn_read_snaps(self):
-        # self._cones_view.snapshots.import_snapshots(name[0],'/lidar_mode1/cones')
+        #self._cones_view.snapshots.import_snapshots(name[0],'/lidar_mode1/cones')
         self._cones_view.change_view(2)
-        # self._widget.horSlid_snap.setMaximum(self._cones_view.snapshots.max)
+        self._widget.horSlid_snap.setMaximum(self._cones_view.snapshots.max)
 
 
     def track_settings_change(self, event):

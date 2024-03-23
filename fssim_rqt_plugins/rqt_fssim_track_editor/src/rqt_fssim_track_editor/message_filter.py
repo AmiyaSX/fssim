@@ -30,19 +30,25 @@ class BagMessageFilter:
         self.file_name = filename
 
     def get_topic_names(self, msg):
-        print " Opening bag:",self.file_name
+        print(" Opening bag:",self.file_name)
         bag = rosbag.Bag(self.file_name)
-
-        val = bag.get_type_and_topic_info()[1].values()
+        print("bag")
+        val = list(bag.get_type_and_topic_info()[1].values())
         types = []
         for i in range(0, len(val)):
             types.append(val[i][0])
+            print ("holu")
+
 
         indices =  [i for i, j in enumerate(types) if j == msg._type]
-        topics = bag.get_type_and_topic_info()[1].keys()
+        print ("a")
+        topics = list(bag.get_type_and_topic_info()[1].keys())
+        print ("b")
         matching_topics = [topics[j] for i, j in enumerate(indices)]
+        print ("c")
 
         bag.close()
+        print ("d")
         return matching_topics
 
 

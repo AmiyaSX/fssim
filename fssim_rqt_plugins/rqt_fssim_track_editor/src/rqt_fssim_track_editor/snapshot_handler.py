@@ -22,11 +22,8 @@
 
 import numpy as np
 
-from enum import Enum
-from scipy.interpolate import interp1d
 
 ## PyQt Import
-from PyQt5.QtGui import QColor
 
 ## XML
 from lxml import etree
@@ -44,9 +41,8 @@ import rosbag
 from sensor_msgs.msg import PointCloud2
 from sensor_msgs import point_cloud2
 
-from scipy.spatial.distance import dice
 
-from message_filter import BagMessageFilter
+from .message_filter import BagMessageFilter
 
 class SnapshotHandler():
 
@@ -77,7 +73,7 @@ class SnapshotHandler():
             self.cones = np.vstack([self.cones, xy])
 
     def import_snapshots(self, topic_name):
-        print "Importing Snapshots from: ", topic_name
+        print("Importing Snapshots from: ", topic_name)
 
         bag = rosbag.Bag(self.bag_filter.file_name)
 
@@ -93,7 +89,7 @@ class SnapshotHandler():
         bag.close()
 
         self.load_snap_from_list(0)
-        print "Importing DONE"
+        print("Importing DONE")
 
 
     def load_topic_names(self, path):

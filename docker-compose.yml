@@ -41,7 +41,7 @@ services:
     environment:
       - PACKAGE_NAME=fssim
       - ROS_MASTER_URI=http://master:11311 
-      - DISPLAY=novnc:0.0
+      - DISPLAY=130.229.161.35:0.0   # <-- YOUR TODO: use your IP instead
     entrypoint: /ws/src/fssim/docker-entrypoint.sh
     command: bash -c "source /ws/devel/setup.bash && roslaunch fssim auto_fssim.launch"
   
@@ -65,7 +65,7 @@ services:
       - ros_network
       - x11
     entrypoint: /ws/src/path_planner_pkg/docker-entrypoint.sh  # <-- YOUR TODO: change to name of your repository
-    command: bash -c "source  /ws/devel/setup.bash && roslaunch path_planner run_planner.launch"
+    command: bash -c "source  /ws/devel/setup.bash && sleep infinity"
   
   controller_pkg:           # <-- YOUR TODO: change to name of your repository
     depends_on: 
@@ -89,7 +89,7 @@ services:
       - x11
 
     entrypoint: /ws/src/controller_pkg/docker-entrypoint.sh  # <-- YOUR TODO: change to name of your repository
-    command: bash -c "while true; do sleep 1; done"
+    command: bash -c "source /ws/devel/setup.bash && pip install numpy --upgrade --ignore-installed && roslaunch controller run_controller.launch"
 
 networks:
   ros_network:

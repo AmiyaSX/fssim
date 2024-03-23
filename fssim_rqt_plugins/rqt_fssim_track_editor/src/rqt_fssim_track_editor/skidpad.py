@@ -104,18 +104,18 @@ class SkidPad:
 
             cone = unit * inner_radius - shift
             if (np.abs(cone[1]) >= vertical_track_width / 2 and cone[1] < 0):
-                inner_cones_left.append(cone)
+                inner_cones_right.append(cone)
 
             cone = unit * outer_radius - shift
             if (np.abs(cone[1]) > vertical_track_width / 2 and cone[1] < 0):
-                outer_cones_left.append(cone)
+                outer_cones_right.append(cone)
 
         # Mirror cones to the other side
-        for cone in inner_cones_left:
-            inner_cones_right.append(-cone)
+        for cone in inner_cones_right:
+            inner_cones_left.append(-cone)
 
-        for cone in outer_cones_left:
-            outer_cones_right.append(-cone)
+        for cone in outer_cones_right:
+            outer_cones_left.append(-cone)
 
         # Place the extra cones
         cone_front = np.array([cone_distance_front, vertical_track_width / 2 + cone_radius])

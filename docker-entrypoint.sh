@@ -2,7 +2,7 @@
 set -e
 source /root/.bashrc
 
-ROS_DISTRO=kinetic
+ROS_DISTRO=noetic
 
 source "/opt/ros/$ROS_DISTRO/setup.bash"
 

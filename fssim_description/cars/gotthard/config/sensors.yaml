@@ -50,7 +50,7 @@ sensors:
       enabled: true
       frame: fssim/vehicle/base_link      # Frame the cones are represented in
 
-    rate: 10                              # Publishing frequency [Hz]
+    rate: 10                            # Publishing frequency [Hz]
 
     delay: 
       time: 0.2                           # Delay [s]
@@ -59,7 +59,7 @@ sensors:
 
     cut_cones_below_x:            -1      # Cut cones that are further than this distance in x car axis
 
-    observation_radius:           15.0    # Below this threshold we can observe cones [m]
+    observation_radius:           10.0    # Below this threshold we can observe cones [m]
     distance_dependent_observation: 100.0 # The probability of observation decreases with factor = -1/distance_dependent_misclass * r + 1
     observation_likelihood_left:  1.0     # Likelihood of observing left              [0..1]
     observation_likelihood_right: 1.0     # Likelihood of observing right             [0..1]
@@ -96,13 +96,13 @@ sensors:
 
     cut_cones_below_x:            -1      # Cut cones that are further than this distance in x car axis
 
-    observation_radius:           10.0    # Below this threshold we can observe cones [m]
+    observation_radius:           16.0    # Below this threshold we can observe cones [m]
     distance_dependent_observation: 100.0 # The probability of observation decreases with factor = -1/distance_dependent_misclass * r + 1
     observation_likelihood_left:  1.0     # Likelihood of observing left              [0..1]
     observation_likelihood_right: 1.0     # Likelihood of observing right             [0..1]
     observation_likelihood_orange: 1.0    # Likelihood of observing right             [0..1]
     
-    color_observation_radius:     10.0    # We can obser color only below this threshild [m]
+    color_observation_radius:     16.0    # We can obser color only below this threshild [m]
     distance_dependent_misclass:  200.0   # The probability of color observation decreases with factor = -1/distance_dependent_misclass * r + 1
     likelihood_yellow:            0.99     # Likelihood of observic color of cones left  [0..1]
     likelihood_blue:              0.99     # Likelihood of observic color of cones right [0..1]

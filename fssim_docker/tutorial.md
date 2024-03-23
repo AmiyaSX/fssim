@@ -61,7 +61,7 @@ docker run -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro --name fs
 
 To display the simulation GUI, you need to have a display server running on your machine so that the Docker container can access it and forward the GUI to your screen. The following subsections will guide you through the process of setting up the X11 display server on your machine for different operating systems (which should be configured outside of the Docker container - so open a new terminal or exit out of the Docker container).
 
-*NOTE:* When you need to expose the X11 display server to a Docker container securely, you can limit the access by allowing only that specific container to connect to the host's X11 server. One way to achieve this is by using the hostname or container ID to make a more specific `xhost` entry. Exposing the X11 server to all local users is not recommended as it is a security risk. Read more about GUI in ROS containers [here](https://wiki.ros.org/docker/Tutorials/GUI).
+*NOTE:* When you need to expose the X11 display server to a Docker container securely, you can limit the access by allowing only that specific container to connect to the host's X11 server. One way to achieve this is by using the hostname or container ID to make a more specific `xhost` entry. Exposing the X11 server to all local users != recommended as it is a security risk. Read more about GUI in ROS containers [here](https://wiki.ros.org/docker/Tutorials/GUI).
 
 #### Linux
 

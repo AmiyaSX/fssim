@@ -29,8 +29,8 @@ from PyQt5 import QtGui, QtCore
 from PyQt5.QtGui import QColor, QPen, QBrush
 from PyQt5.QtCore import *
 
-from track import *
-from snapshot_handler import *
+from .track import *
+from .snapshot_handler import *
 
 
 class TrackViewScene(QGraphicsScene):
@@ -59,7 +59,7 @@ class TrackViewScene(QGraphicsScene):
         self._draw_grid(self._grid_alpha, self._grid_m)
 
         self.mousePressEvent = self.on_mouse_down
-        # self.mouseMoveEvent = self.on_mouse_move
+        self.mouseMoveEvent = self.on_mouse_move
 
         self.track = Track()
 
@@ -236,20 +236,20 @@ class TrackViewScene(QGraphicsScene):
         tree.write(gazebo_models + ".sdf", pretty_print=True, xml_declaration=True, encoding='UTF-8')
         self.track.export_to_yaml(self.model_path + "/track/tracks_yaml", name,create_dir=False)
 
-        print "[INFO] Saving track to: ",gazebo_models + ".sdf"
+        print("[INFO] Saving track to: ",gazebo_models + ".sdf")
 
     def handle_btn_import(self, path,outside,inside,center):
         if path.endswith('.bag'):
             self.track.load_track_from_bag(path,outside,inside,center)
             self.update_all()
         else:
-            print "[ERROR] Wrong file extension. Only ROSBAG supported"
+            print("[ERROR] Wrong file extension. Only ROSBAG supported")
 
     def on_mouse_up(self, event):
         pass
 
     def on_mouse_move(self, event):
-        print event
+        print(event)
 
     def on_mouse_down(self, event):
         if not self.enable_editing:

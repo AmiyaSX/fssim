@@ -1,6 +1,6 @@
-FROM osrf/ros:kinetic-desktop-full
+FROM osrf/ros:noetic-desktop-full
 
-ENV ROS_DISTRO=kinetic
+ENV ROS_DISTRO=noetic
 
 ENV ROS_ROOT=/opt/ros/${ROS_DISTRO} 
 
@@ -12,7 +12,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Update and install necessary tools and dependencies
 RUN apt-get update && \
-    apt-get install -y python-catkin-tools git python-rosdep && \
+    apt-get install -y python3-catkin-tools git python3-rosdep && \
     rosdep update && \
     rm -rf /var/lib/apt/lists/*
 

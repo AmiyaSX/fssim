@@ -1,4 +1,4 @@
-FROM osrf/ros:kinetic-desktop-full
+FROM osrf/ros:noetic-desktop-full
 
 WORKDIR /root
 
@@ -21,7 +21,7 @@ SHELL [ "/bin/bash", "-c" ]
 # Update dependencies and build workspace
 # Note that we use the -f flag to install th    e fssim repository
 # We also need to run the update_dependencies script for fssim hence the second script line
-RUN source /opt/ros/kinetic/setup.bash && \
+RUN source /opt/ros/noetic/setup.bash && \
     yes | ./update_dependencies.sh -f && \
     yes | ./src/fssim/update_dependencies.sh && \
     catkin build && \

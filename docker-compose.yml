@@ -65,7 +65,7 @@ services:
       - ros_network
       - x11
     entrypoint: /ws/src/path_planner_pkg/docker-entrypoint.sh  # <-- YOUR TODO: change to name of your repository
-    command: bash -c "source  /ws/devel/setup.bash && sleep infinity"
+    command: bash -c "source  /ws/devel/setup.bash && roslaunch path_planner run_planner.launch"
   
   controller_pkg:           # <-- YOUR TODO: change to name of your repository
     depends_on: 

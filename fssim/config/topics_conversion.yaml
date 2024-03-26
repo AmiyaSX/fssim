@@ -7,9 +7,6 @@ conversion:
     origin_odom_topic: /fssim/base_pose_ground_truth
     target_odom_topic: /slam/output/odom
     
-    origin_track_topic: /fssim/track
-    target_cones_topic: /perception/cones
-    
   limits:
     max_target_speed: 5
     max_steering_angle: 90

@@ -45,7 +45,8 @@ sensors:
     enabled: true
     node_name: lidar_pipeline             # This name MUST BE the SAME to this section yaml file
     topic_name: /lidar/cones              # Where should the cones be published
-
+    topic_perception_cones: /perception/cones # Where the perception cones be published
+    
     overwrite:
       enabled: true
       frame: fssim/vehicle/base_link      # Frame the cones are represented in
@@ -84,6 +85,8 @@ sensors:
     enabled: true
     node_name: camera_pipeline
     topic_name: /camera/cones
+    topic_perception_cones: /perception/cones_camera # Where the perception cones be published
+    
     overwrite:
       enabled: true
       frame: fssim/vehicle/base_link      # Frame the cones are represented in

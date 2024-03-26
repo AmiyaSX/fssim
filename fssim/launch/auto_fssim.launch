@@ -12,4 +12,6 @@
     <include file="$(find fssim)/launch/rviz.launch"/>
 
     <include file="$(find fssim)/launch/msgs_convert.launch"/>
+
+    <include file="$(find fssim)/launch/fssim.launch"/>
 </launch>

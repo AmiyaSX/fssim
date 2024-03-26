@@ -41,6 +41,10 @@
 #include "gazebo_utils/include/ros_utills.hpp"
 #include "gazebo_utils/include/gazebo_utills.hpp"
 
+// ROS Msgs
+#include "fssim_common/Cones.h"
+#include "fssim_common/Cone.h"
+
 namespace YAML {
 template<>
 struct convert<gazebo::ConeSensorModel::Config> {
@@ -53,7 +57,7 @@ struct convert<gazebo::ConeSensorModel::Config> {
         cType.distance_dependent_observation = node["distance_dependent_observation"].as<double>();
 
         cType.topic_name = node["topic_name"].as<std::string>();
-
+        cType.topic_perception_cones = node["topic_perception_cones"].as<std::string>();
         cType.overwrite_transfer_to_frame = node["overwrite"]["enabled"].as<bool>();
         cType.transfer_to_frame           = node["overwrite"]["frame"].as<std::string>();
 
@@ -112,7 +116,8 @@ bool ConeSensorModel::load(const physics::ModelPtr &model, const sdf::ElementPtr
 
     pub_cones_   = nh_.advertise<PointCloud>(config.topic_name, 1);
     pub_markers_ = nh_.advertise<visualization_msgs::MarkerArray>("cone_sensor", 1);
-
+    pub_perception_cones_ = nh_.advertise<fssim_common::Cones>(config.topic_perception_cones, 1);
+    ROS_INFO("ConeSensorModel: topic perception: %s", config.topic_perception_cones.c_str());
     parent_model_ = model;
     model_        = model->GetWorld()->ModelByName("track");
     if (model_ == nullptr) { return false; }
@@ -130,6 +135,10 @@ void ConeSensorModel::update() {
     const auto       time_now           = ros::Time::now() - ros::Duration(eps + delay_with_noise);
 
     Eigen::Vector3d pos;
+    fssim_common::Cones perception_cones;
+    perception_cones.header.frame_id = "map";
+    perception_cones.header.stamp = ros::Time::now();
+    
     if (!getState(time_now, pos)) { return; }
 
     pcl_conversions::toPCL(time_now, point_cloud_.header.stamp);
@@ -143,11 +152,10 @@ void ConeSensorModel::update() {
     std::vector<Eigen::Vector3d> left_around;
     std::vector<Eigen::Vector3d> right_around;
 
-    findObservedCones(pos, left_, config.observation_likelihood_left, config.likelihood_blue, point_cloud_, LEFT);
-    findObservedCones(pos, right_, config.observation_likelihood_right, config.likelihood_yellow, point_cloud_, RIGHT);
-    findObservedCones(pos, orange_, config.observation_likelihood_orange, config.likelihood_orange, point_cloud_,
+    findObservedCones(pos, left_, config.observation_likelihood_left, config.likelihood_blue, point_cloud_, perception_cones,LEFT);
+    findObservedCones(pos, right_, config.observation_likelihood_right, config.likelihood_yellow, point_cloud_, perception_cones, RIGHT);
+    findObservedCones(pos, orange_, config.observation_likelihood_orange, config.likelihood_orange, point_cloud_, perception_cones,
                       ORANGE);
-
     point_cloud_.header.frame_id = "fssim_map";
     point_cloud_.width           = 1;
     point_cloud_.height          = static_cast<uint32_t>(point_cloud_.points.size());
@@ -166,7 +174,8 @@ void ConeSensorModel::update() {
                                                  }), point_cloud_transformed.end());
 
     if (config.overwrite_transfer_to_frame) { point_cloud_transformed.header.frame_id = config.transfer_to_frame; }
-
+    
+    pub_perception_cones_.publish(perception_cones);
     pub_cones_.publish(point_cloud_transformed);
 }
 
@@ -281,12 +290,14 @@ void ConeSensorModel::findObservedCones(const Eigen::Vector3d &p,
                                         double likelihood,
                                         double color_likelihood,
                                         PointCloud &obs,
+                                        fssim_common::Cones &perception_cones,
                                         SIDE side) const {
     for (const auto &c: cones) {
         const Eigen::Vector3d cone_position         = toVector(c);
         const double          d                     = (p - cone_position).norm();
         const double          obs_likelihood_factor =
                                   std::max(-1.0 / config.distance_dependent_observation * d + 1, 0.0);
+        fssim_common::Cone perception_cone;
 
         if (d <= config.observation_radius && observed(likelihood * obs_likelihood_factor)) {
             const double likelihood_factor = std::max(-1.0 / config.distance_dependent_misclass * d + 1, 0.0);
@@ -313,6 +324,33 @@ void ConeSensorModel::findObservedCones(const Eigen::Vector3d &p,
                                    probs.probability_yellow,
                                    probs.probability_orange,
                                    probs.probability_other);
+            perception_cone.x = cone.x;
+            perception_cone.y = cone.y;
+            perception_cone.z = cone.z;
+
+            // if(probs.probability_blue == 1) {
+            //     perception_cone.color = 2;
+            // } else if(probs.probability_yellow == 1) {
+            //     perception_cone.color = 1;
+            // } else if(probs.probability_orange == 1) {
+            //     perception_cone.color = 3;
+            // } else if(probs.probability_other == 1) {
+            //     perception_cone.color = 0;
+            // }
+            if(side == 0) {
+                perception_cone.color = 2;
+            } else if(side == 1) {
+                perception_cone.color = 1;
+            } else if(side == 2) {
+                perception_cone.color = 3;
+            } else {
+                perception_cone.color = 0;
+            }
+            perception_cone.covariance[0] = 0.005;
+            perception_cone.covariance[1] = 0;
+            perception_cone.covariance[2] = 0;
+            perception_cone.covariance[3] = 0.005;
+            perception_cones.cones.push_back(perception_cone);
             obs.points.push_back(cone);
         }
     }

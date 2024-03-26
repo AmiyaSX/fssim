@@ -45,6 +45,10 @@
 #include <tf/tf.h>
 #include <tf/transform_listener.h>
 
+// ROS Msgs
+#include "fssim_common/Cones.h"
+#include "fssim_common/Cone.h"
+
 namespace gazebo {
 
 class ConeSensorModel {
@@ -59,6 +63,7 @@ class ConeSensorModel {
     struct Config {
         double      observation_radius;
         std::string topic_name;
+        std::string topic_perception_cones;
         std::string transfer_to_frame;
         bool overwrite_transfer_to_frame;
 
@@ -93,7 +98,7 @@ class ConeSensorModel {
 
         void load(const sdf::ElementPtr &_sdf) {
             topic_name = _sdf->Get<std::string>("topic_name");
-
+            topic_perception_cones = _sdf->Get<std::string>("topic_perception_cones");
             observation_radius = _sdf->Get<double>("observation_radius");
 
             observation_likelihood_left   = _sdf->Get<double>("observation_likelihood_left");
@@ -111,6 +116,8 @@ class ConeSensorModel {
         void print() const {
             ROS_INFO("ConeSensorModel: ");
             ROS_INFO("\ttopic_name: %s", topic_name.c_str());
+            ROS_INFO("\ttopic_perception_cones: %s", topic_perception_cones.c_str());
+
             ROS_INFO("\ttransfer_to_frame: %s", transfer_to_frame.c_str());
 
             ROS_INFO("\tobservation_radius: %f", observation_radius);
@@ -154,6 +161,7 @@ class ConeSensorModel {
                            double likelihood,
                            double color_likelihood,
                            PointCloud &obs,
+                           fssim_common::Cones &perception_cones,
                            SIDE side) const;
 
     ConeColourProbability computeColorProbability(const Eigen::Vector3d &cone,
@@ -188,6 +196,7 @@ class ConeSensorModel {
 
     ros::Publisher pub_cones_;
     ros::Publisher pub_markers_;
+    ros::Publisher pub_perception_cones_;
 
     PointCloud point_cloud_;
 

@@ -1,6 +1,8 @@
 <launch>
     <arg name="fssim_config" default="$(find fssim)/config/simulation.yaml"/>
+    <arg name="track_name" default="FSG.sdf"/>
+
     <node pkg="fssim" name="automated_res" type="automated_res.py" output="screen"
-    args="--config $(arg fssim_config)">
+    args="--config $(arg fssim_config) --track $(arg track_name)">
     </node>
 </launch>

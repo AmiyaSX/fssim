@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+import rospy
+
+# ROS Msgs
+from nav_msgs.msg import Odometry 
+from fssim_common.msg import State
+from tf.transformations import quaternion_from_euler
+
+# Use the config variables
+INPUT_ODOM_TOPIC = rospy.get_param('conversion/topics/origin_odom_topic') # /fssim/base_pose_ground_truth (fssim)
+OUTPUT_ODOM_TOPIC = rospy.get_param('conversion/topics/target_odom_topic') # /slam/output/odom (MARS)
+
+def cb_odometry_conversion(state):
+    msg = Odometry()
+    # Odometry.header (stamp, frame_id)
+    msg.header.frame_id ="fssim_map"
+    # Odometry.pose.pose.position
+    msg.pose.pose.position.x = state.x
+    msg.pose.pose.position.y = state.y
+    msg.pose.pose.position.z = 0
+    # Odometry.pose.pose.orientation
+    [x, y, z, w] = quaternion_from_euler(0, 0, state.yaw)
+    msg.pose.pose.orientation.x = x
+    msg.pose.pose.orientation.y = y
+    msg.pose.pose.orientation.z = z
+    msg.pose.pose.orientation.w = w
+    # Odometry.twist.twist.linear
+    msg.twist.twist.linear.x = state.vx
+    msg.twist.twist.linear.y = state.vy
+    msg.twist.twist.linear.z = 0
+    # Odometry.twist.twist.angular
+    msg.twist.twist.angular.x = 0
+    msg.twist.twist.angular.y = 0
+    msg.twist.twist.angular.z = state.r
+    pub_odometry.publish(msg)
+
+# FssimOdometryConversion node converts input from State msg(fssim) outputs Odometry msg(MARS)
+if __name__ == '__main__':
+    global pub_odometry
+    rospy.init_node('fssim_odometry_conversion_node')
+    rospy.loginfo("Fssim_odometry conversion node started")
+    rospy.Subscriber(INPUT_ODOM_TOPIC, State, cb_odometry_conversion)
+    pub_odometry = rospy.Publisher(OUTPUT_ODOM_TOPIC,
+                          Odometry, queue_size=1)
+    rospy.spin()

@@ -112,6 +112,7 @@ class AutomatedRes:
         with open(arg.config, 'r') as f:
             self.sim_config = yaml.load(f)
         self.sim_config_id = arg.sim_id
+        self.track_name = arg.track_name
 
         self.checks_is_in_track = self.sim_config["res"]["checks"]["is_in_track"]
 
@@ -124,10 +125,10 @@ class AutomatedRes:
         self.cmd_rosbag = None
 
         self.mission = Mission()
-        if "skidpad" in self.sim_config['repetitions'][self.sim_config_id]['track_name']:
+        if "skidpad" in self.track_name:
             self.mission.mission = "skidpad"
             self.checks_is_in_track = False
-        elif "acceleration" in self.sim_config['repetitions'][self.sim_config_id]['track_name']:
+        elif "acceleration" in self.track_name:
             self.mission.mission = "acceleration"
             self.checks_is_in_track = False
         else:
@@ -278,7 +279,7 @@ class AutomatedRes:
             pkg_config_storage = 'fssim_description'
 
         # Create Track Config
-        track_name = settings['track_name']
+        track_name = self.track_name
         generate_track_model(track_name)
 
         track_name_without_extension = os.path.splitext(track_name)[0]
@@ -454,13 +455,15 @@ if __name__ == '__main__':
                         default = rospkg.RosPack().get_path('fssim') + '/config/simulation.yaml')
     parser.add_argument("--output", dest = "output", metavar = "FOLDER", help = "Output YAML file")
     parser.add_argument("--id", dest = "sim_id", help = "Config ID in YAML file", default = 0, type = int)
+    parser.add_argument("--track", dest = "track_name", help = "Choose target track", default = "FSG.sdf", type = str)
+    
     args, unknown = parser.parse_known_args()
     args.output = os.path.abspath(args.output) if args.output is not None else None
 
     roscore = start_roscore()
 
     rospy.init_node('automated_res')
-
+    print(args)
     automated_res = AutomatedRes(args)
 
     try:

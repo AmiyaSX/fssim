@@ -40,5 +40,14 @@ catkin_install_python(PROGRAMS scripts/automated_res.py
 catkin_install_python(PROGRAMS scripts/launch.py
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
+catkin_install_python(PROGRAMS scripts/cmd_convert.py
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+catkin_install_python(PROGRAMS scripts/odometry_convert.py
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+        
+catkin_install_python(PROGRAMS scripts/cones_convert.py
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
 catkin_install_python(PROGRAMS scripts/topics_monitor.py
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})

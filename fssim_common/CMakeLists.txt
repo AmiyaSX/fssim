@@ -33,6 +33,9 @@ add_message_files(FILES
         Vector3Ext.msg
         CarInfo.msg
         Cmd.msg
+        Cone.msg
+        Cones.msg
+        dv_control_target.msg
         WheelSpeeds.msg
         TopicState.msg
         SimHealth.msg
